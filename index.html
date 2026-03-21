@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>leodiasdc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0800;
+      --bg2:       #100d00;
+      --bg3:       #161100;
+      --bg4:       #1c1500;
+      --amber:     #e8920a;
+      --amber2:    #c97808;
+      --amber3:    #f5a623;
+      --amber-dim: #7a4d06;
+      --amber-xdim:#3a2403;
+      --text:      #c8850a;
+      --text2:     #7a5208;
+      --text3:     #3d2a04;
+      --white:     #f0d090;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'IBM Plex Sans', sans-serif;
+      --glow-sm:   0 0 6px rgba(232,146,10,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+      );
+      pointer-events: none; z-index: 9000;
+    }
+
+    /* CRT vignette */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,0.75) 100%);
+      pointer-events: none; z-index: 9001;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 8000;
+      background: rgba(10,8,0,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--text3);
+    }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto; padding: 0 2rem;
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--mono); font-weight: 600; font-size: 15px;
+      color: var(--amber3); text-decoration: none; letter-spacing: 0.04em;
+      text-shadow: var(--glow-sm);
+    }
+    .nav-logo em { color: var(--text2); font-style: normal; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text2); text-decoration: none;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--amber3); }
+    .nav-badge {
+      font-size: 10px; letter-spacing: 0.08em;
+      color: var(--amber-dim); border: 1px solid var(--text3);
+      padding: 3px 10px; border-radius: 2px;
+    }
+
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+    /* HERO */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding-top: 52px; }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+      gap: 5rem; align-items: center; padding: 7rem 0;
+    }
+    .hero-eyebrow {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--amber-dim); margin-bottom: 1.4rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: inline-block;
+      width: 28px; height: 1px; background: var(--amber-dim);
+    }
+    h1 {
+      font-family: var(--sans); font-size: clamp(3rem, 6.5vw, 5.2rem);
+      font-weight: 700; line-height: 0.95; letter-spacing: -2.5px;
+      color: var(--white); margin-bottom: 1.4rem;
+    }
+    h1 .dim { color: var(--amber-dim); font-weight: 300; }
+    .hero-lead {
+      font-family: var(--sans); font-size: 15px; font-weight: 300;
+      color: var(--text2); line-height: 1.85; max-width: 460px; margin-bottom: 2.5rem;
+    }
+    .hero-lead strong { color: var(--text); font-weight: 400; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px; border-radius: 2px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      letter-spacing: 0.04em; text-decoration: none; cursor: pointer;
+      transition: all 0.18s; border: none;
+    }
+    .btn-primary { background: var(--amber2); color: #000; }
+    .btn-primary:hover { background: var(--amber3); box-shadow: 0 0 18px rgba(232,146,10,0.3); }
+    .btn-outline { background: transparent; color: var(--text2); border: 1px solid var(--text3); }
+    .btn-outline:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+    /* CRT screen */
+    .crt {
+      background: var(--bg2); border: 1px solid var(--text3); border-radius: 4px; overflow: hidden;
+    }
+    .crt-bar {
+      padding: 10px 14px; border-bottom: 1px solid var(--text3);
+      display: flex; align-items: center; gap: 8px; background: var(--bg3);
+    }
+    .crt-title { font-size: 10px; color: var(--text3); letter-spacing: 0.06em; margin-left: 2px; }
+    .cd { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); }
+    .cd-on { background: var(--amber); box-shadow: 0 0 5px var(--amber); animation: flick 3s ease-in-out infinite; }
+    @keyframes flick { 0%,95%,100%{opacity:1} 97%{opacity:0.4} }
+    .crt-body { padding: 1.4rem 1.6rem; font-size: 12px; line-height: 1.9; }
+    .p  { color: var(--amber); }
+    .c  { color: var(--white); }
+    .k  { color: var(--amber2); }
+    .v  { color: var(--text); }
+    .n  { color: var(--amber3); }
+    .cm { color: var(--text3); }
+    .ln { display: block; }
+    .cur {
+      display: inline-block; width: 7px; height: 13px;
+      background: var(--amber); vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .div { border: none; border-top: 1px solid var(--text3); }
+
+    section { padding: 5.5rem 0; }
+    .sec-lbl {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--amber-dim); margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-lbl::before { content: '//'; color: var(--text3); }
+    h2 {
+      font-family: var(--sans); font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+      font-weight: 700; letter-spacing: -1.2px; color: var(--white);
+      line-height: 1.1; margin-bottom: 3rem;
+    }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .about-body p {
+      font-family: var(--sans); font-size: 14px; font-weight: 300;
+      color: var(--text2); margin-bottom: 1rem; line-height: 1.95;
+    }
+    .about-body p strong { color: var(--text); font-weight: 400; }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      margin-top: 2.5rem; border: 1px solid var(--text3);
+      border-radius: 2px; overflow: hidden;
+    }
+    .stat { padding: 1.2rem 1.4rem; background: var(--bg2); transition: background 0.2s; }
+    .stat:hover { background: var(--bg3); }
+    .stat-n {
+      font-family: var(--sans); font-size: 2.2rem; font-weight: 700;
+      color: var(--amber); line-height: 1; margin-bottom: 4px;
+    }
+    .stat-l { font-size: 10px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* PROJECTS */
+    .frow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .fb {
+      padding: 5px 13px; border-radius: 2px; background: transparent;
+      border: 1px solid var(--text3); color: var(--text3);
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer; transition: all 0.18s;
+    }
+    .fb:hover, .fb.on { background: var(--amber-xdim); border-color: var(--amber-dim); color: var(--amber); }
+    .pgrid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1px; border: 1px solid var(--text3); border-radius: 2px; overflow: hidden;
+    }
+    .pc {
+      background: var(--bg2); padding: 1.6rem;
+      position: relative; overflow: hidden; transition: background 0.2s;
+    }
+    .pc::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--amber); transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .pc:hover { background: var(--bg3); }
+    .pc:hover::after { transform: scaleX(1); }
+    .pc[data-h="1"] { display: none; }
+    .pc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .pc-ico {
+      width: 34px; height: 34px; border-radius: 2px; border: 1px solid var(--text3);
+      display: flex; align-items: center; justify-content: center; background: var(--bg3);
+      color: var(--amber); font-family: var(--mono); font-weight: 600; font-size: 12px;
+    }
+    .pc-gh {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 2px; border: 1px solid var(--text3);
+      color: var(--text3); text-decoration: none; font-size: 13px; transition: all 0.18s;
+    }
+    .pc-gh:hover { border-color: var(--amber-dim); color: var(--amber); }
+    .pc-name { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+    .pc-desc { font-family: var(--sans); font-size: 13px; font-weight: 300; color: var(--text2); line-height: 1.7; margin-bottom: 1.2rem; }
+    .pc-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      padding: 2px 8px; border-radius: 2px; font-size: 9px;
+      letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid;
+    }
+    .t-hw   { border-color: rgba(232,146,10,0.35); color: var(--amber);   background: rgba(232,146,10,0.06); }
+    .t-sw   { border-color: rgba(200,133,10,0.35); color: #d4a030;         background: rgba(200,133,10,0.06); }
+    .t-fw   { border-color: rgba(240,160,35,0.35); color: var(--amber3);   background: rgba(240,160,35,0.06); }
+    .t-ee   { border-color: rgba(180,110,10,0.35); color: #b87020;         background: rgba(180,110,10,0.06); }
+    .t-math { border-color: rgba(120,80,8,0.5);    color: var(--amber-dim);background: rgba(120,80,8,0.08);   }
+
+    /* SKILLS */
+    .sk-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; border: 1px solid var(--text3); border-radius: 2px; overflow: hidden;
+    }
+    .sk-g { background: var(--bg2); padding: 1.6rem; transition: background 0.2s; }
+    .sk-g:hover { background: var(--bg3); }
+    .sk-g.wide { grid-column: span 2; }
+    .sk-gt {
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--amber-dim); margin-bottom: 1.2rem;
+      padding-bottom: 0.7rem; border-bottom: 1px solid var(--text3);
+    }
+    .sk-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .sk-item { display: flex; align-items: center; gap: 10px; }
+    .sk-name { font-size: 12px; color: var(--text); min-width: 140px; }
+    .sk-track { flex: 1; height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; }
+    .sk-fill { height: 100%; background: var(--amber); border-radius: 1px; width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .sk-num { font-size: 10px; color: var(--text3); min-width: 28px; text-align: right; }
+
+    /* CONTACT */
+    .cg { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .c-lead {
+      font-family: var(--sans); font-size: 14px; font-weight: 300;
+      color: var(--text2); line-height: 1.9; margin-bottom: 2rem;
+    }
+    .clinks { display: flex; flex-direction: column; gap: 8px; }
+    .clink {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 16px; border-radius: 2px; background: var(--bg2);
+      border: 1px solid var(--text3); text-decoration: none; transition: all 0.2s;
+    }
+    .clink:hover { border-color: var(--amber-dim); background: var(--bg3); transform: translateX(3px); }
+    .cl-ico {
+      width: 32px; height: 32px; border-radius: 2px; border: 1px solid var(--text3);
+      background: var(--bg3); display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--amber); font-family: var(--mono); font-weight: 600; flex-shrink: 0;
+    }
+    .cl-lbl { flex: 1; }
+    .cl-name { font-size: 13px; color: var(--white); display: block; }
+    .cl-val  { font-size: 11px; color: var(--text2); }
+    .cl-arr  { color: var(--text3); font-size: 13px; transition: color 0.2s; }
+    .clink:hover .cl-arr { color: var(--amber); }
+    .cf { display: flex; flex-direction: column; gap: 12px; }
+    .fg { display: flex; flex-direction: column; gap: 5px; }
+    .fl { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+    .fi, .ft {
+      background: var(--bg2); border: 1px solid var(--text3); border-radius: 2px;
+      padding: 9px 12px; color: var(--text); font-family: var(--mono);
+      font-size: 12px; outline: none; resize: none; transition: border-color 0.2s;
+    }
+    .fi:focus, .ft:focus { border-color: var(--amber-dim); }
+    .fi::placeholder, .ft::placeholder { color: var(--text3); }
+
+    footer { border-top: 1px solid var(--text3); padding: 1.8rem 0; }
+    .foot {
+      max-width: 1080px; margin: 0 auto; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .foot-t { font-size: 11px; color: var(--text3); }
+    .foot-t a { color: var(--text2); text-decoration: none; transition: color 0.2s; }
+    .foot-t a:hover { color: var(--amber); }
+
+    .fia { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fia.vis { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 800px) {
+      .hero-grid, .about-grid, .cg { grid-template-columns: 1fr; gap: 2.5rem; }
+      .sk-grid { grid-template-columns: 1fr; }
+      .sk-g.wide { grid-column: span 1; }
+      .nav-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">leo<em>dias</em>dc<em>_</em></a>
+    <ul class="nav-links">
+      <li><a href="#about">about</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+    <div class="nav-badge">open to collab</div>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">multidisciplinary engineer</div>
+        <h1>Hardware<br><span class="dim">&amp;</span> Software<br><span class="dim">&amp;</span> Everything.</h1>
+        <p class="hero-lead">
+          I'm <strong>Leonardo Dias</strong> — building at the overlap of
+          <strong>firmware</strong>, <strong>electronics</strong>,
+          <strong>software</strong> and <strong>applied math</strong>.
+          From silicon to screen.
+        </p>
+        <div class="cta-row">
+          <a href="#projects" class="btn btn-primary">view_projects()</a>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="btn btn-outline">github ↗</a>
+        </div>
+      </div>
+
+      <div class="crt">
+        <div class="crt-bar">
+          <div class="cd"></div><div class="cd"></div><div class="cd cd-on"></div>
+          <span class="crt-title">terminal — leodiasdc@dev:~</span>
+        </div>
+        <div class="crt-body">
+          <span class="ln"><span class="cm">// system boot sequence</span></span>
+          <span class="ln"><span class="cm">// ─────────────────────</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="p">$ </span><span class="c">cat profile.json</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="cm">{</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;</span><span class="k">"name"</span><span class="cm">:</span> <span class="v">"Leonardo Dias"</span><span class="cm">,</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;</span><span class="k">"handle"</span><span class="cm">:</span> <span class="v">"leodiasdc"</span><span class="cm">,</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;</span><span class="k">"stack"</span><span class="cm">: [</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">"Hardware"</span><span class="cm">,</span> <span class="v">"Firmware"</span><span class="cm">,</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">"Electronics"</span><span class="cm">,</span> <span class="v">"Software"</span><span class="cm">,</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">"Mathematics"</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;],</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;</span><span class="k">"location"</span><span class="cm">:</span> <span class="v">"Brazil"</span><span class="cm">,</span></span>
+          <span class="ln"><span class="cm">&nbsp;&nbsp;</span><span class="k">"available"</span><span class="cm">:</span> <span class="n">true</span></span>
+          <span class="ln"><span class="cm">}</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="p">$ </span><span class="cur"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div" />
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-lbl fia">about</div>
+    <h2 class="fia">Engineer by curiosity.<br>Builder by nature.</h2>
+    <div class="about-grid">
+      <div class="about-body fia">
+        <p>I design and build systems that live at multiple layers of the stack — from <strong>bare-metal firmware</strong> on microcontrollers to <strong>full-stack applications</strong>, from <strong>custom PCB layouts</strong> to <strong>mathematical models</strong> and signal processing pipelines.</p>
+        <p>My work thrives on constraint. Hardware shapes software architecture. Analog imperfections become digital decisions. Elegant mathematics collapses complex control problems into something tractable.</p>
+        <p>When I'm not engineering, I'm reading about things I haven't built yet.</p>
+        <div class="stats fia">
+          <div class="stat"><div class="stat-n">5+</div><div class="stat-l">years building</div></div>
+          <div class="stat"><div class="stat-n">20+</div><div class="stat-l">projects shipped</div></div>
+          <div class="stat"><div class="stat-n">5</div><div class="stat-l">engineering domains</div></div>
+          <div class="stat"><div class="stat-n">∞</div><div class="stat-l">things to learn</div></div>
+        </div>
+      </div>
+      <div class="crt fia">
+        <div class="crt-bar">
+          <div class="cd"></div><div class="cd"></div><div class="cd cd-on"></div>
+          <span class="crt-title">skills.conf</span>
+        </div>
+        <div class="crt-body">
+          <span class="ln"><span class="cm"># hardware</span></span>
+          <span class="ln"><span class="k">mcu</span>   = <span class="v">STM32, ESP32, RISC-V</span></span>
+          <span class="ln"><span class="k">fpga</span>  = <span class="v">Lattice, Xilinx (learning)</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="cm"># firmware</span></span>
+          <span class="ln"><span class="k">lang</span>  = <span class="v">C, C++, Rust (no_std)</span></span>
+          <span class="ln"><span class="k">rtos</span>  = <span class="v">FreeRTOS, Zephyr</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="cm"># electronics</span></span>
+          <span class="ln"><span class="k">eda</span>   = <span class="v">KiCad, LTspice</span></span>
+          <span class="ln"><span class="k">rf</span>    = <span class="v">antenna design, matching</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="cm"># software</span></span>
+          <span class="ln"><span class="k">lang</span>  = <span class="v">Python, TypeScript, Rust</span></span>
+          <span class="ln">&nbsp;</span>
+          <span class="ln"><span class="cm"># math</span></span>
+          <span class="ln"><span class="k">areas</span> = <span class="v">DSP, control, optimization</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div" />
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-lbl fia">projects</div>
+    <h2 class="fia">Things I've built.</h2>
+    <div class="frow fia">
+      <button class="fb on" data-f="all">all</button>
+      <button class="fb" data-f="hw">hardware</button>
+      <button class="fb" data-f="sw">software</button>
+      <button class="fb" data-f="fw">firmware</button>
+      <button class="fb" data-f="ee">electronics</button>
+      <button class="fb" data-f="math">math</button>
+    </div>
+    <div class="pgrid fia" id="pgrid">
+      <div class="pc" data-cats="fw hw">
+        <div class="pc-head">
+          <div class="pc-ico">01</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">Custom RTOS Scheduler</div>
+        <div class="pc-desc">Preemptive task scheduler from scratch on ARM Cortex-M4. Priority queues, context switching, and inter-task communication primitives.</div>
+        <div class="pc-tags"><span class="tag t-fw">firmware</span><span class="tag t-hw">arm cortex</span></div>
+      </div>
+      <div class="pc" data-cats="ee hw">
+        <div class="pc-head">
+          <div class="pc-ico">02</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">Buck-Boost Converter PCB</div>
+        <div class="pc-desc">4-layer KiCad SMPS design with thermal simulation, EMI mitigation, and automated BOM generation via scripting.</div>
+        <div class="pc-tags"><span class="tag t-ee">electronics</span><span class="tag t-hw">power</span></div>
+      </div>
+      <div class="pc" data-cats="sw math">
+        <div class="pc-head">
+          <div class="pc-ico">03</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">Kalman Filter Library</div>
+        <div class="pc-desc">Numerically stable EKF in Rust with no-std support. Sensor fusion for robotics, benchmarked against MATLAB reference implementations.</div>
+        <div class="pc-tags"><span class="tag t-sw">rust</span><span class="tag t-math">estimation</span></div>
+      </div>
+      <div class="pc" data-cats="sw fw">
+        <div class="pc-head">
+          <div class="pc-ico">04</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">IoT Gateway Platform</div>
+        <div class="pc-desc">ESP32 edge device with MQTT broker, OTA firmware updates, and TypeScript fleet dashboard. Handles 200+ simultaneous sensor nodes.</div>
+        <div class="pc-tags"><span class="tag t-fw">esp32</span><span class="tag t-sw">typescript</span></div>
+      </div>
+      <div class="pc" data-cats="math sw">
+        <div class="pc-head">
+          <div class="pc-ico">05</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">DSP Signal Analyzer</div>
+        <div class="pc-desc">Real-time FFT pipeline with waterfall spectrograms, peak detection, and harmonic analysis. Interfaces directly with RTL-SDR hardware.</div>
+        <div class="pc-tags"><span class="tag t-math">DSP</span><span class="tag t-sw">python</span></div>
+      </div>
+      <div class="pc" data-cats="hw ee fw">
+        <div class="pc-head">
+          <div class="pc-ico">06</div>
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="pc-gh">↗</a>
+        </div>
+        <div class="pc-name">Brushless Motor Controller</div>
+        <div class="pc-desc">FOC implementation for BLDC motors. Custom gate driver board + STM32 firmware with encoder feedback and PID velocity loop.</div>
+        <div class="pc-tags"><span class="tag t-hw">hardware</span><span class="tag t-ee">power electronics</span><span class="tag t-fw">stm32</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div" />
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-lbl fia">tech stack</div>
+    <h2 class="fia">Tools of the trade.</h2>
+    <div class="sk-grid fia">
+      <div class="sk-g">
+        <div class="sk-gt">Hardware</div>
+        <ul class="sk-list">
+          <li class="sk-item"><span class="sk-name">ARM Cortex-M</span><div class="sk-track"><div class="sk-fill" data-p="92"></div></div><span class="sk-num">92</span></li>
+          <li class="sk-item"><span class="sk-name">ESP32 / ESP-IDF</span><div class="sk-track"><div class="sk-fill" data-p="88"></div></div><span class="sk-num">88</span></li>
+          <li class="sk-item"><span class="sk-name">RISC-V</span><div class="sk-track"><div class="sk-fill" data-p="65"></div></div><span class="sk-num">65</span></li>
+          <li class="sk-item"><span class="sk-name">FPGA / HDL</span><div class="sk-track"><div class="sk-fill" data-p="42"></div></div><span class="sk-num">42</span></li>
+        </ul>
+      </div>
+      <div class="sk-g">
+        <div class="sk-gt">Firmware</div>
+        <ul class="sk-list">
+          <li class="sk-item"><span class="sk-name">C / C++</span><div class="sk-track"><div class="sk-fill" data-p="93"></div></div><span class="sk-num">93</span></li>
+          <li class="sk-item"><span class="sk-name">FreeRTOS</span><div class="sk-track"><div class="sk-fill" data-p="87"></div></div><span class="sk-num">87</span></li>
+          <li class="sk-item"><span class="sk-name">HAL / Bare-metal</span><div class="sk-track"><div class="sk-fill" data-p="91"></div></div><span class="sk-num">91</span></li>
+          <li class="sk-item"><span class="sk-name">OTA / Bootloaders</span><div class="sk-track"><div class="sk-fill" data-p="74"></div></div><span class="sk-num">74</span></li>
+        </ul>
+      </div>
+      <div class="sk-g">
+        <div class="sk-gt">Electronics</div>
+        <ul class="sk-list">
+          <li class="sk-item"><span class="sk-name">KiCad / PCB</span><div class="sk-track"><div class="sk-fill" data-p="87"></div></div><span class="sk-num">87</span></li>
+          <li class="sk-item"><span class="sk-name">SPICE simulation</span><div class="sk-track"><div class="sk-fill" data-p="80"></div></div><span class="sk-num">80</span></li>
+          <li class="sk-item"><span class="sk-name">Analog design</span><div class="sk-track"><div class="sk-fill" data-p="83"></div></div><span class="sk-num">83</span></li>
+          <li class="sk-item"><span class="sk-name">RF / antenna</span><div class="sk-track"><div class="sk-fill" data-p="58"></div></div><span class="sk-num">58</span></li>
+        </ul>
+      </div>
+      <div class="sk-g wide">
+        <div class="sk-gt">Software &amp; Mathematics</div>
+        <ul class="sk-list" style="display:grid;grid-template-columns:1fr 1fr;gap:11px 3rem">
+          <li class="sk-item"><span class="sk-name">Python</span><div class="sk-track"><div class="sk-fill" data-p="95"></div></div><span class="sk-num">95</span></li>
+          <li class="sk-item"><span class="sk-name">Control theory</span><div class="sk-track"><div class="sk-fill" data-p="86"></div></div><span class="sk-num">86</span></li>
+          <li class="sk-item"><span class="sk-name">Rust</span><div class="sk-track"><div class="sk-fill" data-p="78"></div></div><span class="sk-num">78</span></li>
+          <li class="sk-item"><span class="sk-name">DSP / Signal proc.</span><div class="sk-track"><div class="sk-fill" data-p="84"></div></div><span class="sk-num">84</span></li>
+          <li class="sk-item"><span class="sk-name">TypeScript</span><div class="sk-track"><div class="sk-fill" data-p="82"></div></div><span class="sk-num">82</span></li>
+          <li class="sk-item"><span class="sk-name">Linear algebra</span><div class="sk-track"><div class="sk-fill" data-p="90"></div></div><span class="sk-num">90</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div" />
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-lbl fia">contact</div>
+    <h2 class="fia">Let's build something.</h2>
+    <div class="cg">
+      <div class="fia">
+        <p class="c-lead">Have an interesting project, want to collaborate, or just want to talk about embedded systems at 2am? I'm always open to conversations that lead somewhere unusual.</p>
+        <div class="clinks">
+          <a href="https://github.com/leodiasdc" target="_blank" rel="noopener" class="clink">
+            <div class="cl-ico">GH</div>
+            <div class="cl-lbl"><span class="cl-name">GitHub</span><span class="cl-val">github.com/leodiasdc</span></div>
+            <span class="cl-arr">→</span>
+          </a>
+          <a href="https://linkedin.com/in/leodiasdc" target="_blank" rel="noopener" class="clink">
+            <div class="cl-ico">LI</div>
+            <div class="cl-lbl"><span class="cl-name">LinkedIn</span><span class="cl-val">linkedin.com/in/leodiasdc</span></div>
+            <span class="cl-arr">→</span>
+          </a>
+          <a href="mailto:leo@leodiasdc.dev" class="clink">
+            <div class="cl-ico">@</div>
+            <div class="cl-lbl"><span class="cl-name">Email</span><span class="cl-val">leo@leodiasdc.dev</span></div>
+            <span class="cl-arr">→</span>
+          </a>
+        </div>
+      </div>
+      <div class="fia">
+        <div class="crt">
+          <div class="crt-bar">
+            <div class="cd"></div><div class="cd"></div><div class="cd cd-on"></div>
+            <span class="crt-title">send_message.sh</span>
+          </div>
+          <div class="crt-body">
+            <form class="cf" onsubmit="doSend(event)">
+              <div class="fg">
+                <label class="fl" for="cn">// name</label>
+                <input class="fi" type="text" id="cn" placeholder="Ada Lovelace" required />
+              </div>
+              <div class="fg">
+                <label class="fl" for="ce">// email</label>
+                <input class="fi" type="email" id="ce" placeholder="ada@example.com" required />
+              </div>
+              <div class="fg">
+                <label class="fl" for="cm">// message</label>
+                <textarea class="ft" id="cm" rows="4" placeholder="I have a project..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="align-self:flex-start">execute()</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div class="foot-t">© 2025 <a href="https://github.com/leodiasdc" target="_blank" rel="noopener">leodiasdc</a> — no frameworks harmed</div>
+    <div class="foot-t"><a href="https://github.com/leodiasdc" target="_blank" rel="noopener">view source ↗</a></div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('vis');
+      e.target.querySelectorAll('.sk-fill').forEach(b => b.style.width = b.dataset.p + '%');
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fia').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('.fb').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      const f = btn.dataset.f;
+      document.querySelectorAll('.pc').forEach(c => {
+        c.dataset.h = (f === 'all' || c.dataset.cats.split(' ').includes(f)) ? '0' : '1';
+      });
+    });
+  });
+
+  function doSend(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'sent ✓'; btn.disabled = true;
+    setTimeout(() => { btn.textContent = 'execute()'; btn.disabled = false; e.target.reset(); }, 3000);
+  }
+</script>
+</body>
+</html>
